@@ -4,17 +4,15 @@ import java.util.List;
 
 public class JwtResponse {
 
-	private String token; //it is a encrypted string which will help us to access the secured endpoints from the serve
+	private String token;
 	private String type = "Bearer";
-	private Long id; //register id
-	private String userName;
+	private Long id;
 	private String email;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, Long id, String userName, String email, List<String> roles) {
+	public JwtResponse(String accessToken, Long id, String email, List<String> roles) {
 		this.token = accessToken;
 		this.id = id;
-		this.userName = userName;
 		this.email = email;
 		this.roles = roles;
 	}
@@ -49,14 +47,6 @@ public class JwtResponse {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public List<String> getRoles() {

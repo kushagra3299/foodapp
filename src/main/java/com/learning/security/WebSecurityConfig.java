@@ -1,6 +1,5 @@
 package com.learning.security;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +18,15 @@ import com.learning.security.jwt.AuthEntryPointJwt;
 import com.learning.security.jwt.AuthTokenFilter;
 import com.learning.security.services.UserDetailsServiceImpl;
 
-
 @Configuration
-//it will only have security related configurations
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
-	
 	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+	private AuthEntryPointJwt unauthorizedHandeler;
 	
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -44,7 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-	//we override these methods as we only need 1 instance of it and we use Bean for its creation
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		// TODO Auto-generated method stub
@@ -63,17 +58,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf()
 		.disable()
 		.exceptionHandling()
-		.authenticationEntryPoint(unauthorizedHandler)
+		.authenticationEntryPoint(unauthorizedHandeler)
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		.authorizeHttpRequests().antMatchers("/api/auth/**").permitAll()
-		.antMatchers("/api/test/**").permitAll().anyRequest().authenticated();
+		.authorizeHttpRequests().antMatchers("/api/*").permitAll()
+		.antMatchers("/api/users/** || /api/food/**")
+		.permitAll().anyRequest().authenticated();
 		
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		
 //		super.configure(http);
 	}
-	
 
 }

@@ -19,8 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.learning.security.services.UserDetailsServiceImpl;
 
-
-
 public class AuthTokenFilter extends OncePerRequestFilter {
 	
 	@Autowired
@@ -28,43 +26,34 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
 	
-	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//this method responsible for validating the token
-		
 		try {
-		//we need to parse the token
-		String jwt = parseJwt(request);
-		if(jwt!=null && jwtUtils.validateJwtToken(jwt)){
-			String userName = jwtUtils.getUserNameFromJwtToken(jwt);
-			
-			UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
-			
-			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-			usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
-			
-			SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			String jwt = parseJwt(request);
+			if (jwt!=null && jwtUtils.validateJwtToken(jwt)) {
+				String username = jwtUtils.getUsernameFromJwtToken(jwt);
+				UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Cannot set user authentication {}", e);
 		}
-		}catch(Throwable e) {
-			logger.error("cannot set user authentication {}", e);
-		}
-		filterChain.doFilter(request, response); //internally it will call next filter/ servlet (Dispactcher)
-
+		filterChain.doFilter(request, response);
 	}
 	
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
-		//jwt token placed inside header(authorization header)
-		
-		if(StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-			return headerAuth.substring(7, headerAuth.length()); //7th position onwards we get our actual token
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+			return headerAuth.substring(7, headerAuth.length());
 		}
-		return  null;
+		return null;
 	}
 
 }

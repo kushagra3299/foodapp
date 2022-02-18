@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.learning.entity.Food;
-import com.learning.entity.TypeOfFood;
+import com.learning.entity.TYPE;
+
 @Repository
-public interface foodRepository extends JpaRepository<Food, Long> {
+public interface FoodRepo extends JpaRepository<Food, Integer> {
 	
-	List<Food> findAllByTypeOfFood(TypeOfFood typeOfFood);
+//	Retrieving food items by food type
+	List<Food> findAllByFoodType(TYPE foodType);
 
 }
