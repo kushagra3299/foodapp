@@ -1,0 +1,26 @@
+spring:
+   jackson:
+      serialization:
+         fail-on-empty-beans: false
+   datasource:
+      url: jdbc:mysql://localhost:3306/springtest
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+   jpa:
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.MySQL8Dialect
+         show-sql: true
+      hibernate:
+         naming:
+            physical-strategy: com.learning.utils.CustomNamingStrategy
+      ddl-auto: create
+server:
+   port: 9005
+   servlet:
+      context-path: /api
+learning:
+    app:
+        jwtSecret:secretkey
+        jwtExpiration:86400000
